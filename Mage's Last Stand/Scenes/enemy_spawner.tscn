@@ -1,0 +1,30 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://Scripts/enemy_spawner.gd" id="1_yh8m7"]
+[ext_resource type="PackedScene" uid="uid://bia5pktbhy4al" path="res://Scenes/enemy_weak_kobold.tscn" id="2_mii0x"]
+[ext_resource type="Script" path="res://Scripts/spawn_info.gd" id="3_w5vwx"]
+
+[sub_resource type="Resource" id="Resource_qhw7e"]
+script = ExtResource("3_w5vwx")
+time_start = 0
+time_end = 10
+enemy = ExtResource("2_mii0x")
+enemy_num = 1
+enemy_spawn_delay = 1
+
+[sub_resource type="Resource" id="Resource_hn1cb"]
+script = ExtResource("3_w5vwx")
+time_start = 10
+time_end = 60
+enemy = ExtResource("2_mii0x")
+enemy_num = 1
+enemy_spawn_delay = 0
+
+[node name="EnemySpawner" type="Node2D"]
+script = ExtResource("1_yh8m7")
+spawns = Array[ExtResource("3_w5vwx")]([SubResource("Resource_qhw7e"), SubResource("Resource_hn1cb")])
+
+[node name="SpawnTimer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="timeout" from="SpawnTimer" to="." method="_on_spawn_timer_timeout"]

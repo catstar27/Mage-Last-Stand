@@ -1,0 +1,53 @@
+[gd_scene load_steps=4 format=3 uid="uid://cvfionnpr3xan"]
+
+[ext_resource type="FontFile" uid="uid://pc8yfe50oeyj" path="res://Font/tenderness.otf" id="1_7vd7b"]
+[ext_resource type="Script" path="res://Scripts/menu.gd" id="1_w6ned"]
+[ext_resource type="PackedScene" uid="uid://bvxy5i4h5hwsp" path="res://Scenes/button.tscn" id="2_eysrj"]
+
+[node name="Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_w6ned")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 640.0
+offset_bottom = 360.0
+color = Color(0, 0, 0.121569, 1)
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_top = 40.0
+offset_right = 20.0
+offset_bottom = 63.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("1_7vd7b")
+theme_override_font_sizes/font_size = 64
+text = "Survivors"
+
+[node name="StartButton" parent="." instance=ExtResource("2_eysrj")]
+layout_mode = 0
+offset_left = 280.0
+offset_top = 250.0
+offset_right = 360.0
+offset_bottom = 280.0
+text = "Play"
+
+[node name="ExitButton" parent="." instance=ExtResource("2_eysrj")]
+layout_mode = 0
+offset_left = 280.0
+offset_top = 300.0
+offset_right = 360.0
+offset_bottom = 330.0
+text = "Exit"
+
+[connection signal="click_end" from="StartButton" to="." method="_on_start_button_click_end"]
+[connection signal="click_end" from="ExitButton" to="." method="_on_exit_button_click_end"]
