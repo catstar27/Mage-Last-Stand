@@ -6,9 +6,8 @@
 [ext_resource type="PackedScene" uid="uid://dw3gnpwpovvtw" path="res://Scenes/hit_box.tscn" id="4_jxwm3"]
 [ext_resource type="AudioStream" uid="uid://7w46juwnfvxs" path="res://Audio/SoundEffect/enemy_hit.ogg" id="5_74m0b"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_bu8p7"]
-radius = 3.0
-height = 16.0
+[sub_resource type="CircleShape2D" id="CircleShape2D_c7ccd"]
+radius = 6.0
 
 [sub_resource type="Animation" id="Animation_5nk7u"]
 length = 0.001
@@ -67,7 +66,7 @@ hframes = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-1, 2)
-shape = SubResource("CapsuleShape2D_bu8p7")
+shape = SubResource("CircleShape2D_c7ccd")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 unique_name_in_owner = true

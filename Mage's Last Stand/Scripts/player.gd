@@ -27,6 +27,18 @@ var tornado_ammo := 0
 var tornado_base_ammo := 0
 var tornado_attack_speed := 3.0
 var tornado_level := 0
+#rune vars
+var rune := preload("res://Scenes/rune.tscn")
+var rune_ammo := 0
+var rune_base_ammo := 0
+var rune_attack_speed := 10.0
+var rune_level := 0
+#rock vars
+var rock := preload("res://Scenes/rock.tscn")
+var rock_ammo := 0
+var rock_base_ammo := 0
+var rock_attack_speed := 3.0
+var rock_level := 0
 #javelin vars
 var javelin := preload("res://Scenes/javelin.tscn")
 var javelin_level := 0
@@ -38,6 +50,10 @@ var enemy_close := []
 @onready var ice_spear_attack_timer := $Attacks/IceSpearTimer/IceSpearAttackTimer
 @onready var tornado_timer := $Attacks/TornadoTimer
 @onready var tornado_attack_timer := $Attacks/TornadoTimer/TornadoAttackTimer
+@onready var rune_timer := $Attacks/RuneTimer
+@onready var rune_attack_timer := $Attacks/RuneTimer/RuneAttackTimer
+@onready var rock_timer := $Attacks/RockTimer
+@onready var rock_attack_timer := $Attacks/RockTimer/RockAttackTimer
 @onready var javelin_base := $Attacks/JavelinBase
 @onready var sprite := $Sprite2D
 @onready var walk_timer := $WalkTimer
@@ -71,7 +87,13 @@ func attack():
 	tornado_timer.wait_time = tornado_attack_speed*(1-spell_cooldown)
 	if tornado_timer.is_stopped():
 		tornado_timer.start()
+	rune_timer.wait_time = rune_attack_speed*(1-spell_cooldown)
+	if rune_timer.is_stopped():
+		rune_timer.start()
 	spawn_javelin()
+	rock_timer.wait_time = rock_attack_speed*(1-spell_cooldown)
+	if rock_timer.is_stopped():
+		rock_timer.start()
 
 func _physics_process(_delta):
 	movement()
@@ -150,6 +172,38 @@ func _on_tornado_attack_timer_timeout():
 		else:
 			tornado_attack_timer.stop()
 
+func _on_rune_timer_timeout():
+	if rune_level > 0:
+		rune_ammo += rune_base_ammo + additional_attacks
+		rune_attack_timer.start()
+
+func _on_rune_attack_timer_timeout():
+	if rune_ammo > 0:
+		var rune_attack = rune.instantiate()
+		rune_attack.position = position
+		rune_attack.level = rune_level
+		add_child(rune_attack)
+		rune_ammo -= 1
+		if rune_ammo > 0:
+			rune_attack_timer.start()
+		else:
+			rune_attack_timer.stop()
+
+func _on_rock_timer_timeout():
+	rock_ammo += rock_base_ammo + additional_attacks
+	rock_attack_timer.start()
+
+func _on_rock_attack_timer_timeout():
+	if rock_ammo > 0:
+		var rock_attack = rock.instantiate()
+		rock_attack.global_position = global_position
+		rock_attack.target = get_closest_target()
+		rock_attack.level = rock_level
+		add_child(rock_attack)
+		rock_ammo -= 1
+		if rock_ammo > 0:
+			rock_attack_timer.start()
+
 func spawn_javelin():
 	if javelin_level > 0:
 		var get_javelin_total = javelin_base.get_child_count()
@@ -167,6 +221,16 @@ func spawn_javelin():
 func get_random_target():
 	if enemy_close.size() > 0:
 		return enemy_close.pick_random().global_position
+	else:
+		return Vector2.UP
+
+func get_closest_target():
+	if enemy_close.size() > 0:
+		var nearest_enemy = enemy_close[0]
+		for i in enemy_close:
+			if global_position.distance_to(i.global_position) < global_position.distance_to(nearest_enemy.global_position):
+				nearest_enemy = i
+		return nearest_enemy.global_position
 	else:
 		return Vector2.UP
 
@@ -259,6 +323,24 @@ func upgrade_character(upgrade):
 		"tornado4":
 			tornado_level = 4
 			tornado_base_ammo += 1
+		"rune1":
+			rune_level = 1
+			rune_base_ammo += 1
+		"rune2":
+			rune_level = 2
+		"rune3":
+			rune_level = 3
+		"rune4":
+			rune_level = 4
+		"rock1":
+			rock_level = 1
+			rock_base_ammo += 1
+		"rock2":
+			rock_level = 1
+		"rock3":
+			rock_level = 1
+		"rock4":
+			rock_level = 1
 		"javelin1":
 			javelin_level = 1
 			javelin_ammo = 1
@@ -274,7 +356,6 @@ func upgrade_character(upgrade):
 			move_speed += 20.0
 		"tome1","tome2","tome3","tome4":
 			spell_size += 0.10
-			print(spell_size)
 		"scroll1","scroll2","scroll3","scroll4":
 			spell_cooldown += 0.05
 		"ring1","ring2":

@@ -74,6 +74,21 @@ autostart = true
 wait_time = 0.2
 one_shot = true
 
+[node name="RuneTimer" type="Timer" parent="Attacks"]
+autostart = true
+
+[node name="RuneAttackTimer" type="Timer" parent="Attacks/RuneTimer"]
+wait_time = 0.5
+one_shot = true
+
+[node name="RockTimer" type="Timer" parent="Attacks"]
+wait_time = 3.0
+autostart = true
+
+[node name="RockAttackTimer" type="Timer" parent="Attacks/RockTimer"]
+wait_time = 0.2
+one_shot = true
+
 [node name="JavelinBase" type="Node2D" parent="Attacks"]
 
 [node name="DetectionRange" type="Area2D" parent="."]
@@ -259,6 +274,10 @@ text = "Menu"
 [connection signal="timeout" from="Attacks/IceSpearTimer/IceSpearAttackTimer" to="." method="_on_ice_spear_attack_timer_timeout"]
 [connection signal="timeout" from="Attacks/TornadoTimer" to="." method="_on_tornado_timer_timeout"]
 [connection signal="timeout" from="Attacks/TornadoTimer/TornadoAttackTimer" to="." method="_on_tornado_attack_timer_timeout"]
+[connection signal="timeout" from="Attacks/RuneTimer" to="." method="_on_rune_timer_timeout"]
+[connection signal="timeout" from="Attacks/RuneTimer/RuneAttackTimer" to="." method="_on_rune_attack_timer_timeout"]
+[connection signal="timeout" from="Attacks/RockTimer" to="." method="_on_rock_timer_timeout"]
+[connection signal="timeout" from="Attacks/RockTimer/RockAttackTimer" to="." method="_on_rock_attack_timer_timeout"]
 [connection signal="body_entered" from="DetectionRange" to="." method="_on_detection_range_body_entered"]
 [connection signal="body_exited" from="DetectionRange" to="." method="_on_detection_range_body_exited"]
 [connection signal="area_entered" from="GrabArea" to="." method="_on_grab_area_area_entered"]
