@@ -31,7 +31,7 @@ offset_bottom = 63.0
 grow_horizontal = 2
 theme_override_fonts/font = ExtResource("1_7vd7b")
 theme_override_font_sizes/font_size = 64
-text = "Survivors"
+text = "Mage's Last Stand"
 
 [node name="StartButton" parent="." instance=ExtResource("2_eysrj")]
 layout_mode = 0

@@ -1,13 +1,14 @@
 extends CharacterBody2D
 #character stat vars
 var move_speed := 40.0
-var health := 80
-var max_health := 80
+var health := 50
+var max_health := 50
 var last_movement := Vector2.UP
 var experience := 0
 var level := 1
 var collected_exp := 0
 var time := 0
+var pickup_range := 1
 #upgrade vars
 var collected_upgrades := []
 var upgrade_options := []
@@ -15,6 +16,10 @@ var armor := 0
 var spell_cooldown := 0.0
 var spell_size := 0.0
 var additional_attacks := 0
+var night_speed := 0.0
+var day_speed := 0.0
+var night_bonus := 0.0
+var day_bonus := 0.0
 #ice spear varss
 var ice_spear := preload("res://Scenes/ice_spear.tscn")
 var ice_spear_ammo := 0
@@ -39,6 +44,12 @@ var rock_ammo := 0
 var rock_base_ammo := 0
 var rock_attack_speed := 3.0
 var rock_level := 0
+#bubble_blast vars
+var bubble_blast := preload("res://Scenes/bubble_blast.tscn")
+var bubble_blast_ammo := 0
+var bubble_blast_base_ammo := 0
+var bubble_blast_attack_speed := 5.0
+var bubble_blast_level := 0
 #javelin vars
 var javelin := preload("res://Scenes/javelin.tscn")
 var javelin_level := 0
@@ -54,9 +65,12 @@ var enemy_close := []
 @onready var rune_attack_timer := $Attacks/RuneTimer/RuneAttackTimer
 @onready var rock_timer := $Attacks/RockTimer
 @onready var rock_attack_timer := $Attacks/RockTimer/RockAttackTimer
+@onready var bubble_blast_timer := $Attacks/BubbleBlastTimer
 @onready var javelin_base := $Attacks/JavelinBase
 @onready var sprite := $Sprite2D
+@onready var light := $PointLight2D
 @onready var walk_timer := $WalkTimer
+@onready var collect_area := $GrabArea
 @onready var exp_bar := $GUILayer/GUI/ExpBar
 @onready var level_label := $GUILayer/GUI/ExpBar/LevelLabel
 @onready var level_sound := $GUILayer/GUI/LevelUp/LevelUpSound
@@ -70,6 +84,7 @@ var enemy_close := []
 @onready var label_result := $GUILayer/GUI/Death/ResultLabel
 @onready var sound_victory := $GUILayer/GUI/Death/VictorySound
 @onready var sound_loss := $GUILayer/GUI/Death/LossSound
+@onready var day_night_cycle := get_tree().get_first_node_in_group("light cycle")
 @onready var item_options := preload("res://Scenes/item_option.tscn")
 @onready var item_container := preload("res://Scenes/inventory_item.tscn")
 signal player_death
@@ -94,17 +109,30 @@ func attack():
 	rock_timer.wait_time = rock_attack_speed*(1-spell_cooldown)
 	if rock_timer.is_stopped():
 		rock_timer.start()
+	bubble_blast_timer.wait_time = bubble_blast_attack_speed*(1-spell_cooldown)
+	if bubble_blast_timer.is_stopped():
+		bubble_blast_timer.start()
 
 func _physics_process(_delta):
+	get_time_bonus()
 	movement()
+	if bubble_blast_ammo > 0:
+		var bubble_blast_attack = bubble_blast.instantiate()
+		bubble_blast_attack.global_position = global_position
+		bubble_blast_attack.target = get_closest_target()
+		bubble_blast_attack.level = bubble_blast_level
+		add_child(bubble_blast_attack)
+		bubble_blast_ammo -= 1
 
 func movement():
 	var x_mov = Input.get_action_strength("right") - Input.get_action_strength("left")
 	var y_mov = Input.get_action_strength("down") - Input.get_action_strength("up")
 	if x_mov > 0:
 		sprite.flip_h = true
+		light.position = Vector2(-12,-6)
 	elif x_mov < 0:
 		sprite.flip_h = false
+		light.position = Vector2(12,-6)
 	velocity = Vector2(x_mov,y_mov).normalized()*move_speed
 	if velocity != Vector2.ZERO:
 		last_movement = Vector2(x_mov,y_mov)
@@ -132,7 +160,7 @@ func death():
 	var tween = death_panel.create_tween()
 	tween.tween_property(death_panel,"position",Vector2(220,50),3).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
 	tween.play()
-	if time >= 300:
+	if time >= 600:
 		label_result.text = "You Win!"
 		sound_victory.play()
 	else:
@@ -204,6 +232,9 @@ func _on_rock_attack_timer_timeout():
 		if rock_ammo > 0:
 			rock_attack_timer.start()
 
+func _on_bubble_blast_timer_timeout():
+	bubble_blast_ammo += bubble_blast_base_ammo + additional_attacks
+
 func spawn_javelin():
 	if javelin_level > 0:
 		var get_javelin_total = javelin_base.get_child_count()
@@ -217,6 +248,38 @@ func spawn_javelin():
 		for i in get_javelins:
 			if i.has_method("upgrade_javelin"):
 				i.upgrade_javelin()
+
+func get_time_bonus():
+	if day_night_cycle.color.get_luminance() < .5:
+		if night_bonus < night_speed:
+			spell_cooldown += night_speed
+			night_bonus += night_speed
+		elif night_bonus > night_speed:
+			var bonus_correction = night_bonus/night_speed
+			night_bonus /= bonus_correction
+			spell_cooldown -= night_bonus
+	else:
+		if night_bonus > 0:
+			spell_cooldown -= night_speed
+			night_bonus -= night_speed
+		elif night_bonus < 0:
+			spell_cooldown -= night_bonus
+			night_bonus -= night_bonus
+	if day_night_cycle.color.get_luminance() >= .5:
+		if day_bonus < day_speed:
+			spell_cooldown += day_speed
+			day_bonus += day_speed
+		elif day_bonus > day_speed:
+			var bonus_correction = day_bonus/day_speed
+			day_bonus /= bonus_correction
+			spell_cooldown -= day_bonus
+	else:
+		if day_bonus > 0:
+			spell_cooldown -= day_speed
+			day_bonus -= day_speed
+		elif day_bonus < 0:
+			spell_cooldown -= day_bonus
+			day_bonus -= day_bonus
 
 func get_random_target():
 	if enemy_close.size() > 0:
@@ -267,14 +330,13 @@ func calc_exp(gem_exp):
 		experience += collected_exp
 		collected_exp = 0
 	set_exp_bar(experience,required_exp)
-	print(experience)
 
 func calc_exp_req():
 	var exp_cap = level
 	if level < 20:
 		exp_cap = level*5
 	elif level < 40:
-		exp_cap = 95*(level - 19)*8
+		exp_cap = 85*(level - 19)*8
 	else:
 		exp_cap = 255*(level - 39)*12
 	return exp_cap
@@ -341,6 +403,16 @@ func upgrade_character(upgrade):
 			rock_level = 1
 		"rock4":
 			rock_level = 1
+		"bubble_blast1":
+			bubble_blast_level = 1
+			bubble_blast_base_ammo += 15
+		"bubble_blast2":
+			bubble_blast_level = 2
+		"bubble_blast3":
+			bubble_blast_level = 3
+			bubble_blast_base_ammo += 15
+		"bubble_blast4":
+			bubble_blast_level = 4
 		"javelin1":
 			javelin_level = 1
 			javelin_ammo = 1
@@ -360,11 +432,18 @@ func upgrade_character(upgrade):
 			spell_cooldown += 0.05
 		"ring1","ring2":
 			additional_attacks += 1
+		"magnet1","magnet2":
+			pickup_range += 1
+		"nightdweller1","nightdweller2":
+			night_speed += 0.1
+		"sunpraiser1","sunpraiser2":
+			day_speed += 0.1
 		"food":
 			health += 20
 			health = clamp(health,0,max_health)
 	update_inventory(upgrade)
 	attack()
+	collect_area.scale = Vector2(1,1)*pickup_range
 	var option_children = upgrade_options_container.get_children()
 	for i in option_children:
 		i.queue_free()

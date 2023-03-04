@@ -27,6 +27,7 @@ texture = ExtResource("1_3mqqb")
 [node name="Timer" type="Timer" parent="."]
 unique_name_in_owner = true
 wait_time = 10.0
+autostart = true
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_dsl71")

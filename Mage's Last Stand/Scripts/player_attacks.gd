@@ -18,9 +18,8 @@ var reset_pos := Vector2.ZERO
 signal destroyed(node)
 
 func setup():
-	if has_node("%Timer"):
-		var despawn_timer = get_node("%Timer")
-		despawn_timer.timeout.connect(timeout)
+	var despawn_timer = get_node("%Timer")
+	despawn_timer.timeout.connect(timeout)
 
 func enemy_hit():
 	if can_break:

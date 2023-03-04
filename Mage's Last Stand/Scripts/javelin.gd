@@ -11,6 +11,7 @@ var attack_sprite := preload("res://Textures/Items/Weapons/javelin_3_new_attack.
 @onready var attack_sound := $AttackSound
 
 func _ready():
+	collision.call_deferred("set","disabled",true)
 	_on_reset_pos_timer_timeout()
 	upgrade_javelin()
 
@@ -46,7 +47,6 @@ func upgrade_javelin():
 			attack_size = 1.0*(1+player.spell_size)
 			attack_speed = 5.0*(1-player.spell_cooldown)
 	scale = Vector2(1.0,1.0)*attack_size
-	print(paths)
 	attack_timer.wait_time = attack_speed
 
 func _physics_process(delta):

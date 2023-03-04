@@ -70,7 +70,7 @@ const UPGRADES = {
 	"tornado1": {
 		"icon": WEAPON_PATH + "tornado.png",
 		"displayname": "Tornado",
-		"details": "A Tornado is created which travels in a sweeping path in the direction the player is facing",
+		"details": "A Tornado is created which travels in a path in the direction the player is facing",
 		"level": "Level: 1",
 		"prerequisite": [],
 		"type": "weapon"
@@ -161,6 +161,38 @@ const UPGRADES = {
 		"details": "Rock knockback is increased by a further 50%, and damage is doubled once more",
 		"level": "Level: 4",
 		"prerequisite": ["rock3"],
+		"type": "weapon"
+	},
+	"bubble_blast1": {
+		"icon": WEAPON_PATH + "bubble.png",
+		"displayname": "Bubble Blast",
+		"details": "Shoot many inaccurate small bubbles at the closest enemy",
+		"level": "Level: 1",
+		"prerequisite": [],
+		"type": "weapon"
+	},
+	"bubble_blast2": {
+		"icon": WEAPON_PATH + "bubble.png",
+		"displayname": "Bubble Blast",
+		"details": "Bubbles can now pierce twice as many enemies",
+		"level": "Level: 2",
+		"prerequisite": ["bubble_blast1"],
+		"type": "weapon"
+	},
+	"bubble_blast3": {
+		"icon": WEAPON_PATH + "bubble.png",
+		"displayname": "Bubble Blast",
+		"details": "Gain 15 extra bubbles per burst",
+		"level": "Level: 3",
+		"prerequisite": ["bubble_blast2"],
+		"type": "weapon"
+	},
+	"bubble_blast4": {
+		"icon": WEAPON_PATH + "bubble.png",
+		"displayname": "Bubble Blast",
+		"details": "Bubbles can now hit up to 6 enemies and deal double damage",
+		"level": "Level: 4",
+		"prerequisite": ["bubble_blast3"],
 		"type": "weapon"
 	},
 	"armor1": {
@@ -305,6 +337,54 @@ const UPGRADES = {
 		"details": "Your spells now spawn another additional attack",
 		"level": "Level: 2",
 		"prerequisite": ["ring1"],
+		"type": "upgrade"
+	},
+	"magnet1": {
+		"icon": ICON_PATH + "magnet.png",
+		"displayname": "Magnet",
+		"details": "Your pickup range is increased",
+		"level": "Level: 1",
+		"prerequisite": [],
+		"type": "upgrade"
+	},
+	"magnet2": {
+		"icon": ICON_PATH + "magnet.png",
+		"displayname": "Magnet",
+		"details": "Your pickup range is further increased",
+		"level": "Level: 2",
+		"prerequisite": ["magnet1"],
+		"type": "upgrade"
+	},
+	"nightdweller1": {
+		"icon": ICON_PATH + "cateye.png",
+		"displayname": "Night Dweller",
+		"details": "You attack faster in the dark",
+		"level": "Level: 1",
+		"prerequisite": [],
+		"type": "upgrade"
+	},
+	"nightdweller2": {
+		"icon": ICON_PATH + "cateye.png",
+		"displayname": "Night Dweller",
+		"details": "You attack even faster in the dark",
+		"level": "Level: 2",
+		"prerequisite": ["nightdweller1"],
+		"type": "upgrade"
+	},
+	"sunpraiser1": {
+		"icon": ICON_PATH + "sun.png",
+		"displayname": "Sun Praiser",
+		"details": "You attack faster in the sunlight",
+		"level": "Level: 1",
+		"prerequisite": [],
+		"type": "upgrade"
+	},
+	"sunpraiser2": {
+		"icon": ICON_PATH + "sun.png",
+		"displayname": "Sun Praiser",
+		"details": "You attack even faster in the sunlight",
+		"level": "Level: 2",
+		"prerequisite": ["sunpraiser1"],
 		"type": "upgrade"
 	},
 	"food": {

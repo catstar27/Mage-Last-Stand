@@ -1,8 +1,11 @@
-[gd_scene load_steps=17 format=3 uid="uid://cq4he1aso3t7h"]
+[gd_scene load_steps=21 format=3 uid="uid://16v6ffak40xh"]
 
 [ext_resource type="Script" path="res://Scripts/player.gd" id="1_1ag30"]
 [ext_resource type="Texture2D" uid="uid://bl3kk4w0lsovl" path="res://Textures/Player/player_sprite.png" id="1_hpusw"]
+[ext_resource type="Texture2D" uid="uid://uypse4hl1uui" path="res://Textures/light.png" id="2_0mvlc"]
+[ext_resource type="Texture2D" uid="uid://ciyurmjqp5gb5" path="res://Textures/Player/player_sprite_n.png" id="3_4m5x6"]
 [ext_resource type="PackedScene" uid="uid://biydana805dj1" path="res://Scenes/hurt_box.tscn" id="3_qy55c"]
+[ext_resource type="Texture2D" uid="uid://binpqicjhq20d" path="res://Textures/Player/player_sprite_s.png" id="4_buco6"]
 [ext_resource type="Texture2D" uid="uid://d14m2iiiwb04t" path="res://Textures/GUI/exp_progress.png" id="5_xefio"]
 [ext_resource type="FontFile" uid="uid://pc8yfe50oeyj" path="res://Font/tenderness.otf" id="6_gjh5m"]
 [ext_resource type="AudioStream" uid="uid://cxw6sisg86q0q" path="res://Audio/SoundEffect/levelup.ogg" id="7_nfeis"]
@@ -11,6 +14,12 @@
 [ext_resource type="AudioStream" uid="uid://c6fbg3av1lpek" path="res://Audio/SoundEffect/Victory.wav" id="9_yb0mb"]
 [ext_resource type="AudioStream" uid="uid://kl72ns1l14nb" path="res://Audio/SoundEffect/Lose.ogg" id="10_to1ul"]
 [ext_resource type="PackedScene" uid="uid://bvxy5i4h5hwsp" path="res://Scenes/button.tscn" id="11_lldl1"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_mdbyp"]
+diffuse_texture = ExtResource("1_hpusw")
+normal_texture = ExtResource("3_4m5x6")
+specular_texture = ExtResource("4_buco6")
+specular_shininess = 0.1
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_6yusy"]
 radius = 3.0
@@ -34,8 +43,16 @@ collision_mask = 15
 motion_mode = 1
 script = ExtResource("1_1ag30")
 
+[node name="PointLight2D" type="PointLight2D" parent="."]
+position = Vector2(12, -6)
+color = Color(0.686275, 1, 1, 1)
+energy = 0.25
+texture = ExtResource("2_0mvlc")
+texture_scale = 0.33
+height = 30.0
+
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_hpusw")
+texture = SubResource("CanvasTexture_mdbyp")
 hframes = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -78,7 +95,7 @@ one_shot = true
 autostart = true
 
 [node name="RuneAttackTimer" type="Timer" parent="Attacks/RuneTimer"]
-wait_time = 0.5
+wait_time = 2.0
 one_shot = true
 
 [node name="RockTimer" type="Timer" parent="Attacks"]
@@ -88,6 +105,8 @@ autostart = true
 [node name="RockAttackTimer" type="Timer" parent="Attacks/RockTimer"]
 wait_time = 0.2
 one_shot = true
+
+[node name="BubbleBlastTimer" type="Timer" parent="Attacks"]
 
 [node name="JavelinBase" type="Node2D" parent="Attacks"]
 
@@ -278,6 +297,7 @@ text = "Menu"
 [connection signal="timeout" from="Attacks/RuneTimer/RuneAttackTimer" to="." method="_on_rune_attack_timer_timeout"]
 [connection signal="timeout" from="Attacks/RockTimer" to="." method="_on_rock_timer_timeout"]
 [connection signal="timeout" from="Attacks/RockTimer/RockAttackTimer" to="." method="_on_rock_attack_timer_timeout"]
+[connection signal="timeout" from="Attacks/BubbleBlastTimer" to="." method="_on_bubble_blast_timer_timeout"]
 [connection signal="body_entered" from="DetectionRange" to="." method="_on_detection_range_body_entered"]
 [connection signal="body_exited" from="DetectionRange" to="." method="_on_detection_range_body_exited"]
 [connection signal="area_entered" from="GrabArea" to="." method="_on_grab_area_area_entered"]

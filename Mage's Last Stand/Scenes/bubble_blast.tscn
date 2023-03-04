@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://jqnplwo56owk"]
+
+[ext_resource type="Script" path="res://Scripts/bubble_blast.gd" id="1_eoc85"]
+[ext_resource type="Texture2D" uid="uid://cf2ma65xil4t3" path="res://Textures/Items/Weapons/bubble.png" id="2_yrfxy"]
+[ext_resource type="AudioStream" uid="uid://bxmdp521m0mks" path="res://Audio/SoundEffect/104940__glaneur-de-sons__bubble-1.wav" id="3_u02r4"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_cu8fq"]
+radius = 9.01388
+
+[node name="Bubble" type="Area2D" groups=["hitbox"]]
+top_level = true
+scale = Vector2(0.1, 0.1)
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("1_eoc85")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+unique_name_in_owner = true
+shape = SubResource("CircleShape2D_cu8fq")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+rotation = 0.785398
+texture = ExtResource("2_yrfxy")
+
+[node name="Timer" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 10.0
+autostart = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_u02r4")
+volume_db = -10.0
+pitch_scale = 2.0
+autoplay = true

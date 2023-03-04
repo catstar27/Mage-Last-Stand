@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://dllldhgvuvs0q"]
+[gd_scene load_steps=7 format=3 uid="uid://chcv4lgv113qy"]
 
 [ext_resource type="Texture2D" uid="uid://bnc2bxxjagugc" path="res://Textures/Items/Weapons/fire rune.png" id="1_blj2e"]
 [ext_resource type="Script" path="res://Scripts/rune.gd" id="1_j3s6q"]
 [ext_resource type="Script" path="res://Scripts/rune_explosion.gd" id="3_3siji"]
+[ext_resource type="Texture2D" uid="uid://uypse4hl1uui" path="res://Textures/light.png" id="4_sk8tn"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1r55n"]
 radius = 18.0
@@ -28,6 +29,7 @@ texture = ExtResource("1_blj2e")
 [node name="Timer" type="Timer" parent="."]
 unique_name_in_owner = true
 wait_time = 30.0
+autostart = true
 
 [node name="Explosion" type="Area2D" parent="." groups=["hitbox"]]
 collision_layer = 4
@@ -36,6 +38,12 @@ script = ExtResource("3_3siji")
 
 [node name="ExplosionCollision" type="CollisionShape2D" parent="Explosion"]
 shape = SubResource("CircleShape2D_kqlqj")
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+scale = Vector2(0.3, 0.3)
+color = Color(1, 0, 0, 1)
+energy = 1.03
+texture = ExtResource("4_sk8tn")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_entered" from="Explosion" to="Explosion" method="_on_body_entered"]
